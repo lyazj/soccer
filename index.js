@@ -3,6 +3,7 @@
 function loadResource() {
   var xhr = new XMLHttpRequest()
   xhr.open("get", "?mode=list", "true")
+  xhr.setRequestHeader("Cache-Control", "nocache")
   xhr.send()
   xhr.onload = function () {
     if(this.status == 200)
@@ -11,7 +12,6 @@ function loadResource() {
       document.title = document.getElementsByTagName("h1")[0].innerHTML =
         resource.title
       loadText(resource.text)
-      console.log(resource.image)
       if(resource.image.length)
         resource.image.forEach(function (image) {
           loadImage(image)
@@ -31,6 +31,11 @@ function addText(elem, text) {
 }
 
 function loadText(text) {
+  if(text._summary)
+  {
+    addText(textContainer, text._summary)
+    delete text._summary
+  }
   for(var title in text)
   {
     var h2 = document.createElement("h2")
